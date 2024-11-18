@@ -2,7 +2,7 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 # 讀取資料
-df = pd.read_csv('week10.csv', delimiter=';')
+df = pd.read_csv('week10/week10.csv', delimiter=';')
 
 # 顯示前 5 列和所有欄位類型
 print(df.head())
