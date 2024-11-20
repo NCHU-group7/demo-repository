@@ -5,7 +5,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import accuracy_score
 import matplotlib.pyplot as plt
 # Read the data from the file week10.csv
-df = pd.read_csv('week10.csv', sep = ';')
+df = pd.read_csv('week10/week10.csv', sep = ';')
 
 # List of features to analyze
 features = ["age", "job", "marital", "education", "loan"]
