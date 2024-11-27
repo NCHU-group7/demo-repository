@@ -21,40 +21,44 @@ if ret:
     cv2.imwrite('week12 handout/gray.jpg', gray)
 else:
     print("Failed to capture image")
+# IRL
+# Real-time face detection with mosaic effect
+face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
 
-# Record video from the webcam
-cap = cv2.VideoCapture(0) 
-fourcc = cv2.VideoWriter_fourcc(*'XVID') # compression codec
-out = cv2.VideoWriter('week12 handout/output.avi', fourcc, 20.0, (640, 480) )
+# Reinitialize the video capture
+cap = cv2.VideoCapture(0)
 
-face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml') # Load the face detection model
+# Define the codec and create VideoWriter object
+fourcc = cv2.VideoWriter_fourcc(*'XVID')
+out = cv2.VideoWriter('week12 handout/output.avi', fourcc, 20.0, (640, 480))
 
-start_time = cv2.getTickCount()
-duration = 10  # Duration in seconds
-
-while cap.isOpened(): 
+while True:
     ret, frame = cap.read()
     if not ret:
         break
 
-    # Convert frame to grayscale for face detection
+    # Convert to grayscale for face detection
     gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-    faces = face_cascade.detectMultiScale(gray, 1.3, 5)
+    faces = face_cascade.detectMultiScale(gray, 1.1, 4)
 
-    # Apply mosaic to faces
+    # Apply mosaic effect to detected faces
     for (x, y, w, h) in faces:
         face = frame[y:y+h, x:x+w]
-        face = cv2.resize(face, (w // 10, h // 10))
+        face = cv2.resize(face, (w//10, h//10))
         face = cv2.resize(face, (w, h), interpolation=cv2.INTER_NEAREST)
         frame[y:y+h, x:x+w] = face
 
+    # Write the frame to the output video
     out.write(frame)
 
-    # Check if the duration has been reached
-    elapsed_time = (cv2.getTickCount() - start_time) / cv2.getTickFrequency()
-    if elapsed_time > duration:
+    # Display the resulting frame
+    cv2.imshow('Face Detection with Mosaic', frame)
+
+    # Break the loop on 'q' key press
+    if cv2.waitKey(1) & 0xFF == ord('q'):
         break
 
-cap.release() # Release the capture
-out.release() # Release the video writer
-cv2.destroyAllWindows() # Close all OpenCV windows
+# Release everything when done
+cap.release()
+out.release()
+cv2.destroyAllWindows()
